@@ -1,5 +1,4 @@
 "use client";
-
 import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
@@ -12,19 +11,24 @@ import {
 import { Input } from "@/components/ui/input";
 
 type AddPersonModalProps = {
-  onAdd?: (name: string) => void;
+  action: (name: string) => Promise<any>;
 };
 
-const AddPersonModal: React.FC<AddPersonModalProps> = ({ onAdd }) => {
+const AddPersonModal: React.FC<AddPersonModalProps> = ({ action }) => {
   const [open, setOpen] = useState(false);
   const [name, setName] = useState("");
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (name.trim()) {
-      onAdd?.(name.trim());
+    if (!name.trim()) return;
+
+    try {
+      await action(name.trim());
       setName("");
       setOpen(false);
+    } catch (err) {
+      console.error(err);
+      alert("Failed to add person");
     }
   };
 
