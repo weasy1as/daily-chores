@@ -26,7 +26,7 @@ const OrderListCard = ({
   people?: RotationPerson[];
 }) => {
   return (
-    <Card className="p-6">
+    <Card className="p-6 h-full">
       <CardHeader className="p-0 mb-4">
         <CardTitle className="text-sm font-medium">Rotation Order</CardTitle>
       </CardHeader>

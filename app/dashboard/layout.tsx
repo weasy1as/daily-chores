@@ -1,4 +1,5 @@
 "use client";
+import { LogoutButton } from "@/components/logout-button";
 import {
   Navbar,
   NavBody,
@@ -45,7 +46,10 @@ export default function RootLayout({
               <NavbarLogo />
               <NavItems items={navItems} />
               <div className="flex items-center gap-4">
-                <NavbarButton variant="secondary">Login</NavbarButton>
+                <NavbarButton variant="secondary">
+                  {" "}
+                  <LogoutButton />
+                </NavbarButton>
                 <NavbarButton variant="primary">Book a call</NavbarButton>
               </div>
             </NavBody>
