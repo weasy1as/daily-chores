@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
 import { cn } from "@/lib/utils";
@@ -28,24 +28,34 @@ function PersonCard({
   return (
     <div
       className={cn(
-        "flex flex-col md:flex-row items-center justify-between px-4 py-2 rounded-lg border hover:bg-muted",
+        "flex flex-col sm:flex-row items-start sm:items-center justify-between px-4 py-2 rounded-lg border hover:bg-muted",
         isToday && "bg-muted"
       )}
     >
-      <div className="flex items-center gap-3">
+      {/* Avatar + Name */}
+      <div className="flex items-center gap-3 mb-2 sm:mb-0 w-full sm:w-auto">
         <Avatar className="h-8 w-8">
           <AvatarFallback>{person.name[0]}</AvatarFallback>
         </Avatar>
         <span className="font-medium">{person.name}</span>
       </div>
 
-      <div className="flex justify-between md:justify-center items-center gap-2">
+      {/* Actions */}
+      <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2 w-full sm:w-auto">
         <Switch
           checked={person.active}
-          onCheckedChange={(checked) => togglePersonActive(person.id, checked)}
-          className="mr-2"
+          onCheckedChange={(checked) => {
+            togglePersonActive(person.id, checked);
+            onToggleActive?.(checked);
+          }}
+          className="sm:mr-2"
         />
-        <Button size="sm" variant="outline" onClick={onEdit}>
+        <Button
+          size="sm"
+          variant="outline"
+          onClick={onEdit}
+          className="w-full sm:w-auto"
+        >
           Edit
         </Button>
         <DeletePersonButton

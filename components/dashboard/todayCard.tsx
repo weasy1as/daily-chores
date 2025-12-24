@@ -10,7 +10,6 @@ import {
   DialogTitle,
   DialogDescription,
   DialogTrigger,
-  DialogClose,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -62,12 +61,10 @@ const TodayCard = ({
   );
   const [notes, setNotes] = useState<string | undefined>(data.notes);
 
-  // dialog states
   const [openHelp, setOpenHelp] = useState(false);
   const [openPaid, setOpenPaid] = useState(false);
   const [openMissed, setOpenMissed] = useState(false);
 
-  // form state
   const [selectedPersonId, setSelectedPersonId] = useState<string | undefined>(
     undefined
   );
@@ -96,28 +93,16 @@ const TodayCard = ({
             : payload.done_by_person_name || data.assignedPerson.name
         );
         setNotes(payload.notes || payload.penalty_reason || formNotes);
-        // close dialogs
         setOpenHelp(false);
         setOpenPaid(false);
         setOpenMissed(false);
-        // reset local form
         setFormNotes(undefined);
         setPenaltyReason(undefined);
         setRotationShifted(false);
-        // refresh server-rendered data so Upcoming/Today reflect persisted log
-        try {
-          router.refresh();
-        } catch (_) {}
-
+        router.refresh();
         toast.success("Logged successfully");
       } else {
-        if (res.status === 409) {
-          toast.error(
-            "A log for this date already exists. You can edit it in Logs."
-          );
-        } else {
-          toast.error("Error logging: " + (json.error || "unknown"));
-        }
+        toast.error(json.error || "Error logging");
       }
     } catch (e) {
       toast.error("Error logging: " + (e as any).message);
@@ -125,7 +110,7 @@ const TodayCard = ({
   }
 
   return (
-    <Card className="p-6">
+    <Card className="p-4 sm:p-6">
       {/* Header */}
       <CardHeader className="p-0 mb-4">
         <CardTitle className="text-sm text-muted-foreground">
@@ -134,13 +119,12 @@ const TodayCard = ({
       </CardHeader>
 
       {/* Assigned Person */}
-      <CardContent className="p-0 flex items-center gap-4 mb-6">
+      <CardContent className="p-0 flex flex-col sm:flex-row items-center gap-4 mb-6">
         <Avatar className="h-12 w-12">
           <AvatarImage src={data.assignedPerson.avatarUrl} />
           <AvatarFallback>{data.assignedPerson.name[0]}</AvatarFallback>
         </Avatar>
-
-        <div>
+        <div className="text-center sm:text-left">
           <h2 className="text-lg font-semibold">{data.assignedPerson.name}</h2>
           <p className="text-sm text-muted-foreground">Assigned for today</p>
         </div>
@@ -149,7 +133,8 @@ const TodayCard = ({
       {/* Status / Actions */}
       <CardFooter className="p-0">
         {!isLogged ? (
-          <div className="grid grid-cols-2 gap-3 w-full">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 w-full">
+            {/* Completed */}
             <Button
               className="w-full gap-2"
               onClick={() =>
@@ -160,19 +145,17 @@ const TodayCard = ({
                 })
               }
             >
-              <CheckCircle className="h-4 w-4" />
-              Completed by me
+              <CheckCircle className="h-4 w-4" /> Completed by me
             </Button>
 
-            {/* Help dialog */}
+            {/* Help */}
             <Dialog open={openHelp} onOpenChange={setOpenHelp}>
               <DialogTrigger asChild>
                 <Button variant="secondary" className="w-full gap-2">
-                  <Users className="h-4 w-4" />
-                  Done by someone else
+                  <Users className="h-4 w-4" /> Done by someone else
                 </Button>
               </DialogTrigger>
-              <DialogContent>
+              <DialogContent className="sm:max-w-md w-full">
                 <DialogHeader>
                   <DialogTitle>Done by someone else</DialogTitle>
                   <DialogDescription>
@@ -180,7 +163,6 @@ const TodayCard = ({
                     optional notes.
                   </DialogDescription>
                 </DialogHeader>
-
                 <div className="grid gap-2">
                   <Label>Who did it</Label>
                   <select
@@ -203,8 +185,7 @@ const TodayCard = ({
                     onChange={(e) => setFormNotes(e.target.value)}
                   />
                 </div>
-
-                <DialogFooter>
+                <DialogFooter className="flex flex-col sm:flex-row gap-2">
                   <Button variant="ghost" onClick={() => setOpenHelp(false)}>
                     Cancel
                   </Button>
@@ -215,13 +196,11 @@ const TodayCard = ({
                         type: "help",
                         notes: formNotes || null,
                       };
-
                       if (selectedPersonId && selectedPersonId !== "other") {
                         payload.done_by_person_id = selectedPersonId;
                       } else if (selectedPersonId === "other") {
                         payload.done_by_person_name = formNotes || "(external)";
                       }
-
                       callCreateLog(payload);
                     }}
                   >
@@ -231,23 +210,21 @@ const TodayCard = ({
               </DialogContent>
             </Dialog>
 
-            {/* Paid replacement */}
+            {/* Paid */}
             <Dialog open={openPaid} onOpenChange={setOpenPaid}>
               <DialogTrigger asChild>
                 <Button variant="secondary" className="w-full gap-2">
-                  <DollarSign className="h-4 w-4" />
-                  Paid replacement
+                  <DollarSign className="h-4 w-4" /> Paid replacement
                 </Button>
               </DialogTrigger>
-              <DialogContent>
+              <DialogContent className="sm:max-w-md w-full">
                 <DialogHeader>
                   <DialogTitle>Paid replacement</DialogTitle>
                   <DialogDescription>
-                    Record a paid replacement. Choose who did it and add an
-                    optional note.
+                    Record a paid replacement. Choose who did it and add
+                    optional notes.
                   </DialogDescription>
                 </DialogHeader>
-
                 <div className="grid gap-2">
                   <Label>Who did it</Label>
                   <select
@@ -262,15 +239,13 @@ const TodayCard = ({
                       </option>
                     ))}
                   </select>
-
                   <Label>Notes</Label>
                   <Input
                     value={formNotes || ""}
                     onChange={(e) => setFormNotes(e.target.value)}
                   />
                 </div>
-
-                <DialogFooter>
+                <DialogFooter className="flex flex-col sm:flex-row gap-2">
                   <Button variant="ghost" onClick={() => setOpenPaid(false)}>
                     Cancel
                   </Button>
@@ -281,10 +256,8 @@ const TodayCard = ({
                         type: "paid",
                         notes: formNotes || null,
                       };
-
                       if (selectedPersonId)
                         payload.done_by_person_id = selectedPersonId;
-
                       callCreateLog(payload);
                     }}
                   >
@@ -298,25 +271,22 @@ const TodayCard = ({
             <Dialog open={openMissed} onOpenChange={setOpenMissed}>
               <DialogTrigger asChild>
                 <Button variant="destructive" className="w-full gap-2">
-                  <AlertTriangle className="h-4 w-4" />
-                  Missed / Penalty
+                  <AlertTriangle className="h-4 w-4" /> Missed / Penalty
                 </Button>
               </DialogTrigger>
-              <DialogContent>
+              <DialogContent className="sm:max-w-md w-full">
                 <DialogHeader>
                   <DialogTitle>Missed / Penalty</DialogTitle>
                   <DialogDescription>
                     Record a missed day and optional penalty details.
                   </DialogDescription>
                 </DialogHeader>
-
                 <div className="grid gap-2">
                   <Label>Penalty reason</Label>
                   <Input
                     value={penaltyReason || ""}
                     onChange={(e) => setPenaltyReason(e.target.value)}
                   />
-
                   <div className="flex items-center gap-2">
                     <input
                       id="shift"
@@ -329,8 +299,7 @@ const TodayCard = ({
                     </label>
                   </div>
                 </div>
-
-                <DialogFooter>
+                <DialogFooter className="flex flex-col sm:flex-row gap-2">
                   <Button variant="ghost" onClick={() => setOpenMissed(false)}>
                     Cancel
                   </Button>
@@ -342,7 +311,6 @@ const TodayCard = ({
                         rotation_shifted: rotationShifted,
                         penalty_reason: penaltyReason || null,
                       };
-
                       callCreateLog(payload);
                     }}
                   >

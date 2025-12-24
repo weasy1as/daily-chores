@@ -50,7 +50,6 @@ export default function RootLayout({
                   {" "}
                   <LogoutButton />
                 </NavbarButton>
-                <NavbarButton variant="primary">Book a call</NavbarButton>
               </div>
             </NavBody>
 
@@ -79,20 +78,7 @@ export default function RootLayout({
                   </a>
                 ))}
                 <div className="flex w-full flex-col gap-4">
-                  <NavbarButton
-                    onClick={() => setIsMobileMenuOpen(false)}
-                    variant="primary"
-                    className="w-full"
-                  >
-                    Login
-                  </NavbarButton>
-                  <NavbarButton
-                    onClick={() => setIsMobileMenuOpen(false)}
-                    variant="primary"
-                    className="w-full"
-                  >
-                    Book a call
-                  </NavbarButton>
+                  <LogoutButton />
                 </div>
               </MobileNavMenu>
             </MobileNav>
