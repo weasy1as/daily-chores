@@ -5,26 +5,26 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
 import { cn } from "@/lib/utils";
+import DeletePersonButton from "./DeletePersonButton";
+import { deletePeople, togglePersonActive } from "@/lib/actions/person";
 
-type PersonCardProps = {
-  name: string;
-  avatarUrl?: string;
-  active?: boolean;
+type Props = {
+  person: {
+    id: string;
+    name: string;
+    active: boolean;
+  };
   isToday?: boolean;
+  onToggleActive?: (active: boolean) => void;
   onEdit?: () => void;
-  onDelete?: () => void;
-  onToggleActive?: (value: boolean) => void;
 };
 
-const PersonCard: React.FC<PersonCardProps> = ({
-  name,
-  avatarUrl,
-  active = true,
+function PersonCard({
+  person,
   isToday = false,
-  onEdit,
-  onDelete,
   onToggleActive,
-}) => {
+  onEdit,
+}: Props) {
   return (
     <div
       className={cn(
@@ -34,27 +34,28 @@ const PersonCard: React.FC<PersonCardProps> = ({
     >
       <div className="flex items-center gap-3">
         <Avatar className="h-8 w-8">
-          <AvatarImage src={avatarUrl} />
-          <AvatarFallback>{name[0]}</AvatarFallback>
+          <AvatarFallback>{person.name[0]}</AvatarFallback>
         </Avatar>
-        <span className="font-medium">{name}</span>
+        <span className="font-medium">{person.name}</span>
       </div>
 
       <div className="flex justify-between md:justify-center items-center gap-2">
         <Switch
-          checked={active}
-          onCheckedChange={(val) => onToggleActive?.(val)}
+          checked={person.active}
+          onCheckedChange={(checked) => togglePersonActive(person.id, checked)}
           className="mr-2"
         />
         <Button size="sm" variant="outline" onClick={onEdit}>
           Edit
         </Button>
-        <Button size="sm" variant="destructive" onClick={onDelete}>
-          Delete
-        </Button>
+        <DeletePersonButton
+          personId={person.id}
+          name={person.name}
+          onDelete={deletePeople}
+        />
       </div>
     </div>
   );
-};
+}
 
 export default PersonCard;

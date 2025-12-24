@@ -1,11 +1,7 @@
 "use server";
 import { createClient } from "../server";
-
+const supabase = createClient();
 export async function addPerson(name: string) {
-  "use server"; // marks this as a server action
-
-  const supabase = createClient();
-
   const { data, error } = await (
     await supabase
   )
@@ -23,10 +19,6 @@ export async function addPerson(name: string) {
 }
 
 export async function getPeople() {
-  "use server"; // marks this as a server action
-
-  const supabase = createClient();
-
   const { data, error } = await (await supabase)
     .from("persons")
     .select("*")
@@ -38,4 +30,27 @@ export async function getPeople() {
   }
 
   return data || [];
+}
+
+export async function deletePeople(personId: string) {
+  const { error } = await (await supabase)
+    .from("persons")
+    .delete()
+    .eq("id", personId);
+
+  if (error) {
+    throw new Error(error.message);
+  }
+}
+
+export async function togglePersonActive(personId: string, active: boolean) {
+  const { error } = await (await supabase)
+    .from("persons")
+    .update({ active })
+    .eq("id", personId);
+
+  if (error) {
+    console.error("Error toggling active:", error);
+    throw new Error(error.message);
+  }
 }
