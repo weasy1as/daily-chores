@@ -2,11 +2,26 @@
 import { createClient } from "../server";
 const supabase = createClient();
 export async function addPerson(name: string) {
+  const { data: lastPerson, error: fetchError } = await (await supabase)
+    .from("persons")
+    .select("order_index")
+    .order("order_index", { ascending: false })
+    .limit(1)
+    .single();
+
+  if (fetchError && fetchError.code !== "PGRST116") {
+    // PGRST116 = no rows found (table empty)
+    console.error("Error fetching last order index:", fetchError);
+    throw new Error(fetchError.message);
+  }
+
+  const nextOrderIndex = lastPerson ? lastPerson.order_index + 1 : 0;
+
   const { data, error } = await (
     await supabase
   )
     .from("persons")
-    .insert([{ name, order_index: 0, active: true }])
+    .insert([{ name, order_index: nextOrderIndex, active: true }])
     .select()
     .single();
 
