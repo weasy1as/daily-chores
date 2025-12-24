@@ -1,6 +1,7 @@
 "use client";
 import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
+import { toast } from "sonner";
 import {
   Dialog,
   DialogContent,
@@ -26,9 +27,10 @@ const AddPersonModal: React.FC<AddPersonModalProps> = ({ action }) => {
       await action(name.trim());
       setName("");
       setOpen(false);
+      toast.success("Member added");
     } catch (err) {
       console.error(err);
-      alert("Failed to add person");
+      toast.error("Failed to add person");
     }
   };
 

@@ -1,7 +1,8 @@
 import React from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
-import { cn } from "@/lib/utils";
+import { cn, getUpcomingAssignments } from "@/lib/utils";
+import type { Person } from "@/lib/types";
 
 type UpcomingDay = {
   label: string;
@@ -40,7 +41,17 @@ const dummyUpcoming: UpcomingDay[] = [
   },
 ];
 
-const UpcomingCard = ({ days = dummyUpcoming }: { days?: UpcomingDay[] }) => {
+const UpcomingCard = ({
+  days = dummyUpcoming,
+  people,
+}: {
+  days?: UpcomingDay[];
+  people?: Person[];
+}) => {
+  const computedDays = people
+    ? getUpcomingAssignments(people, new Date(), 7)
+    : days;
+
   return (
     <Card className="p-6">
       <CardHeader className="p-0 mb-4">
@@ -48,7 +59,7 @@ const UpcomingCard = ({ days = dummyUpcoming }: { days?: UpcomingDay[] }) => {
       </CardHeader>
 
       <CardContent className="p-0 space-y-3">
-        {days.map((day, index) => {
+        {computedDays.map((day, index) => {
           const isToday = day.label === "Today";
 
           return (

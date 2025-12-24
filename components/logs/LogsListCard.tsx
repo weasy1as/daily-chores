@@ -8,7 +8,7 @@ type Log = {
   date: string;
   assigned: string;
   actual: string;
-  type: "completed" | "help" | "paid" | "missed";
+  type: "completed" | "help" | "paid" | "missed" | "penalty";
   notes?: string;
 };
 
@@ -22,6 +22,7 @@ const LogsListCard: React.FC<LogsListCardProps> = ({ logs }) => {
       {logs.map((log) => (
         <LogCard
           key={log.id}
+          id={log.id}
           date={log.date}
           assigned={log.assigned}
           actual={log.actual}
