@@ -54,8 +54,8 @@ export const Navbar = ({ children, className }: NavbarProps) => {
     target: ref,
     offset: ["start start", "end start"],
   });
-  const [visible, setVisible] = useState<boolean>(false);
-
+  const [visible, setVisible] = useState<boolean>(true);
+  /*
   useMotionValueEvent(scrollY, "change", (latest) => {
     if (latest > 100) {
       setVisible(true);
@@ -63,7 +63,7 @@ export const Navbar = ({ children, className }: NavbarProps) => {
       setVisible(false);
     }
   });
-
+*/
   return (
     <motion.div
       ref={ref}

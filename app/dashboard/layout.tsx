@@ -43,7 +43,6 @@ export default function RootLayout({
           <Navbar>
             {/* Desktop Navigation */}
             <NavBody>
-              <NavbarLogo />
               <NavItems items={navItems} />
               <div className="flex items-center gap-4">
                 <NavbarButton variant="secondary">
@@ -56,7 +55,6 @@ export default function RootLayout({
             {/* Mobile Navigation */}
             <MobileNav>
               <MobileNavHeader>
-                <NavbarLogo />
                 <MobileNavToggle
                   isOpen={isMobileMenuOpen}
                   onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
